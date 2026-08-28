@@ -1,0 +1,48 @@
+check,scope,count,detail,action
+bar count,RELIANCE,277510,744 sessions,kept
+duplicate timestamps,RELIANCE,0,identical bar timestamps,none found
+null OHLCV,RELIANCE,0,any of O/H/L/C/V missing,none found
+invalid OHLC,RELIANCE,0,"low<=min(O,C)<=max(O,C)<=high holds",none found
+zero-volume bars,RELIANCE,190,0.07% of bars,kept; treated as genuinely untraded minutes
+non-positive prices,RELIANCE,0,price <= 0,none found
+short sessions,RELIANCE,6,"2023-11-12 (60 bars), 2024-03-02 (105 bars), 2024-04-23 (370 bars), 2024-05-18 (105 bars), 2024-11-01 (60 bars), 2025-10-21 (60 bars)","flagged; excluded from baselines, events on them flagged"
+bar count,HDFCBANK,277510,744 sessions,kept
+duplicate timestamps,HDFCBANK,0,identical bar timestamps,none found
+null OHLCV,HDFCBANK,0,any of O/H/L/C/V missing,none found
+invalid OHLC,HDFCBANK,1,2024-06-25 09:15:00,repaired: high/low widened to bracket O/C
+zero-volume bars,HDFCBANK,187,0.07% of bars,kept; treated as genuinely untraded minutes
+non-positive prices,HDFCBANK,0,price <= 0,none found
+short sessions,HDFCBANK,6,"2023-11-12 (60 bars), 2024-03-02 (105 bars), 2024-04-23 (370 bars), 2024-05-18 (105 bars), 2024-11-01 (60 bars), 2025-10-21 (60 bars)","flagged; excluded from baselines, events on them flagged"
+bar count,NYKAA,277508,744 sessions,kept
+duplicate timestamps,NYKAA,0,identical bar timestamps,none found
+null OHLCV,NYKAA,0,any of O/H/L/C/V missing,none found
+invalid OHLC,NYKAA,0,"low<=min(O,C)<=max(O,C)<=high holds",none found
+zero-volume bars,NYKAA,191,0.07% of bars,kept; treated as genuinely untraded minutes
+non-positive prices,NYKAA,0,price <= 0,none found
+short sessions,NYKAA,7,"2023-11-12 (60 bars), 2024-03-02 (105 bars), 2024-04-23 (369 bars), 2024-05-18 (105 bars), 2024-08-20 (374 bars), 2024-11-01 (60 bars), 2025-10-21 (60 bars)","flagged; excluded from baselines, events on them flagged"
+bar count,HAL,277510,744 sessions,kept
+duplicate timestamps,HAL,0,identical bar timestamps,none found
+null OHLCV,HAL,0,any of O/H/L/C/V missing,none found
+invalid OHLC,HAL,1,2024-06-25 09:15:00,repaired: high/low widened to bracket O/C
+zero-volume bars,HAL,187,0.07% of bars,kept; treated as genuinely untraded minutes
+non-positive prices,HAL,0,price <= 0,none found
+short sessions,HAL,6,"2023-11-12 (60 bars), 2024-03-02 (105 bars), 2024-04-23 (370 bars), 2024-05-18 (105 bars), 2024-11-01 (60 bars), 2025-10-21 (60 bars)","flagged; excluded from baselines, events on them flagged"
+bar count,RVNL,277509,744 sessions,kept
+duplicate timestamps,RVNL,0,identical bar timestamps,none found
+null OHLCV,RVNL,0,any of O/H/L/C/V missing,none found
+invalid OHLC,RVNL,0,"low<=min(O,C)<=max(O,C)<=high holds",none found
+zero-volume bars,RVNL,191,0.07% of bars,kept; treated as genuinely untraded minutes
+non-positive prices,RVNL,0,price <= 0,none found
+short sessions,RVNL,6,"2023-11-12 (60 bars), 2024-03-02 (105 bars), 2024-04-23 (369 bars), 2024-05-18 (105 bars), 2024-11-01 (60 bars), 2025-10-21 (60 bars)","flagged; excluded from baselines, events on them flagged"
+announcement count,all,2530,rows in corporate_announcements.jsonl,kept
+duplicate NEWSID,all,0,exact identifier collisions,none found
+near-duplicate filings,all,11,same scrip+subject+headline within 5 minutes,collapsed by event clustering
+unmapped scrip code,all,0,SCRIP_CD outside the supplied five,none found
+timestamp source,all,2519,DissemDT,event clock = DissemDT
+timestamp source,all,11,none,excluded: no usable timestamp
+DissemDT vs DT_TM,all,35,differ in 35 rows; DissemDT earlier in 0,"DissemDT preferred (dissemination, not submission)"
+outside market coverage,all,0,market data spans 2023-08-21 to 2026-08-19,none found
+arrival: before open,all,60,disseminated before 09:15,tradable at that session's open
+arrival: in session,all,589,disseminated 09:15-15:30,tradable from the next complete bar
+arrival: after close,all,1870,disseminated at or after 15:30,tradable at the next session's open
+arrival: weekend,all,193,disseminated on a Saturday or Sunday,tradable at the next session's open

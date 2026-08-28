@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------------------
+# Supplied datasets are NOT redistributed in this repository.
+# See data/README.md for where to place them.
+# ---------------------------------------------------------------------------
+data/raw/
+*.csv
+*.jsonl
+!outputs/*.csv
+!outputs/tables/*.csv
+Quant_Analyst_Intern_Assessment.pdf
+metadata.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Caches produced by the pipeline
+.cache/
+*.parquet
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

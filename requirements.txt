@@ -1,0 +1,16 @@
+# Core analysis
+pandas==2.2.3
+numpy==2.2.6
+scipy==1.17.0
+
+# Statistics (OLS with robust SEs, multiple-comparison correction)
+statsmodels==0.15.0
+
+# Figures
+matplotlib==3.10.8
+
+# Fast columnar IO for the cached 1-minute bars
+pyarrow==23.0.1
+
+# Tests
+pytest==8.3.5

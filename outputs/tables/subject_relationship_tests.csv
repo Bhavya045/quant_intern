@@ -1,0 +1,8 @@
+response_measure,test,statistic,p_value,n,groups,effect_size_epsilon_sq
+absolute peer-adjusted 60m return,Kruskal-Wallis across subjects,50.44159580837383,2.2135626509727106e-07,1580,11.0,0.02577539567136637
+absolute peer-adjusted 60m return,"permutation, labels shuffled within stock",0.012319652921481822,9.999000099990002e-05,1580,11.0,
+"log volume ratio, 60m",Kruskal-Wallis across subjects,148.35821397749407,8.110911443803369e-27,1570,11.0,0.08874805258338299
+"log volume ratio, 60m","permutation, labels shuffled within stock",1.6328831757298579,9.999000099990002e-05,1570,11.0,
+"realised volatility ratio, 60m",Kruskal-Wallis across subjects,129.89953697741853,4.89696281889758e-23,1570,11.0,0.07690797753522677
+"realised volatility ratio, 60m","permutation, labels shuffled within stock",2.1257347609088186,9.999000099990002e-05,1570,11.0,
+absolute peer-adjusted 60m return,"OLS, subject dummies + stock FE, SE clustered by stock-month",7.9289850515355065,3.17494997832121e-11,1583,,0.08879055010800974

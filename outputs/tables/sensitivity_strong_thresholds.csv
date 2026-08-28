@@ -1,0 +1,13 @@
+return_multiple,volume_ratio,n_subjects_strong,subjects_strong,is_headline_setting
+1.5,1.5,1,Financial Results,False
+1.5,2.0,1,Financial Results,False
+1.5,2.5,1,Financial Results,False
+2.0,1.5,1,Financial Results,False
+2.0,2.0,1,Financial Results,True
+2.0,2.5,1,Financial Results,False
+2.5,1.5,1,Financial Results,False
+2.5,2.0,1,Financial Results,False
+2.5,2.5,1,Financial Results,False
+3.0,1.5,1,Financial Results,False
+3.0,2.0,1,Financial Results,False
+3.0,2.5,1,Financial Results,False

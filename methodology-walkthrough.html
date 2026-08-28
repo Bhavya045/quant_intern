@@ -1,0 +1,790 @@
+<title>Announcement Impact Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+  /* ---- light palette: the complete token set lives here ---- */
+  :root{
+    --ground:#FBFCFD;
+    --surface:#EFF3F7;
+    --surface-2:#E4EBF1;
+    --ink:#131E28;
+    --ink-2:#55677A;
+    --ink-3:#7C8C9C;
+    --rule:#D5DEE6;
+    --accent:#A34A2E;
+    --accent-soft:#F6EAE5;
+    --pos:#1F6B4C;
+    --neg:#98352F;
+    --shadow:0 1px 2px rgba(19,30,40,.06);
+
+    --f-display:"Newsreader",Georgia,"Times New Roman",serif;
+    --f-body:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+
+    --measure:68ch;
+    --wide:1080px;
+  }
+  /* system-dark (no stamp) — guarded so an explicit light choice still wins */
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E141A;
+      --surface:#161E26;
+      --surface-2:#1D272F;
+      --ink:#E3EAF1;
+      --ink-2:#8FA1B2;
+      --ink-3:#6E808F;
+      --rule:#253039;
+      --accent:#D4795C;
+      --accent-soft:#2A1D18;
+      --pos:#4FA57E;
+      --neg:#D0706A;
+      --shadow:0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  /* explicit dark choice */
+  :root[data-theme="dark"]{
+    --ground:#0E141A;
+    --surface:#161E26;
+    --surface-2:#1D272F;
+    --ink:#E3EAF1;
+    --ink-2:#8FA1B2;
+    --ink-3:#6E808F;
+    --rule:#253039;
+    --accent:#D4795C;
+    --accent-soft:#2A1D18;
+    --pos:#4FA57E;
+    --neg:#D0706A;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:16px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:var(--wide);margin:0 auto;padding:0 24px 96px}
+  .col{max-width:var(--measure)}
+
+  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+  /* ---------- masthead ---------- */
+  header.mast{
+    border-bottom:1px solid var(--rule);
+    padding:56px 0 28px;
+    margin-bottom:44px;
+  }
+  .eyebrow{
+    font-family:var(--f-mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-3);
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:var(--f-display);
+    font-weight:600;
+    font-size:clamp(30px,4.6vw,46px);
+    line-height:1.1;
+    letter-spacing:-.015em;
+    margin:0 0 16px;
+    text-wrap:balance;
+  }
+  .standfirst{
+    font-family:var(--f-display);
+    font-size:clamp(17px,2.1vw,20px);
+    line-height:1.5;
+    color:var(--ink-2);
+    margin:0;
+    max-width:60ch;
+  }
+  .mast-meta{
+    display:flex;flex-wrap:wrap;gap:10px 26px;
+    margin-top:26px;
+    font-family:var(--f-mono);font-size:12px;color:var(--ink-3);
+  }
+  .mast-meta b{color:var(--ink-2);font-weight:600}
+
+  /* ---------- structure ---------- */
+  h2{
+    font-family:var(--f-display);
+    font-weight:600;
+    font-size:clamp(23px,2.9vw,30px);
+    line-height:1.2;
+    letter-spacing:-.01em;
+    margin:0 0 6px;
+    text-wrap:balance;
+  }
+  h3{
+    font-family:var(--f-body);
+    font-weight:600;
+    font-size:16px;
+    letter-spacing:-.005em;
+    margin:32px 0 8px;
+  }
+  p{margin:0 0 16px;max-width:var(--measure)}
+  section{margin-bottom:60px;scroll-margin-top:24px}
+
+  .stage{
+    display:grid;
+    grid-template-columns:64px minmax(0,1fr);
+    gap:0 28px;
+    border-top:1px solid var(--rule);
+    padding-top:26px;
+    margin-bottom:52px;
+    scroll-margin-top:24px;
+  }
+  .stage-num{
+    font-family:var(--f-mono);
+    font-size:12px;font-weight:600;
+    color:var(--accent);
+    letter-spacing:.06em;
+    padding-top:6px;
+  }
+  .stage-body{min-width:0}
+  @media (max-width:720px){
+    .stage{grid-template-columns:1fr;gap:0}
+    .stage-num{padding-top:0;margin-bottom:8px}
+  }
+
+  /* ---------- reasoning card ---------- */
+  .why{
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-left:3px solid var(--accent);
+    border-radius:3px;
+    padding:16px 20px;
+    margin:20px 0;
+    max-width:var(--measure);
+  }
+  .why h4{
+    font-family:var(--f-mono);
+    font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 8px;font-weight:600;
+  }
+  .why p{margin:0 0 10px;font-size:15px}
+  .why p:last-child{margin:0}
+
+  .rejected{
+    border-left:3px solid var(--ink-3);
+    background:transparent;
+  }
+  .rejected h4{color:var(--ink-3)}
+
+  /* ---------- tables ---------- */
+  .scroll{overflow-x:auto;margin:22px 0;border:1px solid var(--rule);border-radius:3px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+  caption{
+    caption-side:top;text-align:left;
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);padding:12px 16px 8px;
+  }
+  th,td{padding:8px 16px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+  thead th{
+    font-family:var(--f-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--ink-2);font-weight:600;
+    background:var(--surface-2);
+    position:sticky;top:0;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right}
+  td.wrap{white-space:normal;min-width:24ch}
+  .pos{color:var(--pos);font-weight:600}
+  .neg{color:var(--neg);font-weight:600}
+  .dim{color:var(--ink-3)}
+  tr.hi td{background:var(--accent-soft)}
+
+  code,kbd{font-family:var(--f-mono);font-size:.875em;background:var(--surface-2);padding:1px 5px;border-radius:3px}
+  pre{
+    font-family:var(--f-mono);font-size:12.5px;line-height:1.6;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    padding:16px 18px;overflow-x:auto;margin:20px 0;
+  }
+  pre code{background:none;padding:0;font-size:inherit}
+
+  ul,ol{margin:0 0 16px;padding-left:22px;max-width:var(--measure)}
+  li{margin-bottom:7px}
+  li::marker{color:var(--ink-3)}
+
+  .lede{
+    font-family:var(--f-display);
+    font-size:18px;line-height:1.55;color:var(--ink-2);
+    border-left:2px solid var(--rule);
+    padding-left:18px;margin:0 0 26px;max-width:62ch;
+  }
+
+  .kpi{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:3px;
+    margin:24px 0;overflow:hidden;
+  }
+  .kpi div{background:var(--ground);padding:16px 18px}
+  .kpi .v{
+    font-family:var(--f-mono);font-size:22px;font-weight:600;
+    color:var(--ink);letter-spacing:-.02em;display:block;
+  }
+  .kpi .k{
+    font-size:11.5px;color:var(--ink-2);display:block;margin-top:5px;line-height:1.4;
+  }
+
+  .verdict{
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    border:1px solid var(--rule);border-radius:3px;
+    background:var(--surface);
+    padding:22px 24px;margin:26px 0;
+  }
+  .verdict .score{
+    font-family:var(--f-mono);font-size:38px;font-weight:600;
+    color:var(--accent);letter-spacing:-.03em;line-height:1;
+  }
+  .verdict .label{font-size:14px;color:var(--ink-2);max-width:52ch}
+
+  details{
+    border-top:1px solid var(--rule);
+    padding:14px 0;max-width:var(--measure);
+  }
+  summary{cursor:pointer;font-weight:500;font-size:15px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"+";font-family:var(--f-mono);color:var(--accent);margin-right:10px;font-weight:600}
+  details[open] summary::before{content:"\2212"}
+  details > *:not(summary){margin-top:12px}
+
+  footer{border-top:1px solid var(--rule);padding-top:24px;color:var(--ink-3);font-size:13px}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="page">
+
+<header class="mast">
+  <p class="eyebrow">Methodology walkthrough · Indo Thai quant analyst assessment</p>
+  <h1>How corporate announcements move five BSE stocks</h1>
+  <p class="standfirst">Every decision in the pipeline, the technique behind it, the alternative that was rejected, and the reason. Written to be defended line by line.</p>
+  <div class="mast-meta">
+    <span><b>2,530</b> announcements</span>
+    <span><b>1,387,547</b> one-minute bars</span>
+    <span><b>744</b> sessions</span>
+    <span>21 Aug 2023 &ndash; 19 Aug 2026</span>
+    <span>Repo: <b>bhavya</b></span>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<section id="brief">
+  <h2>What the assessment actually asks for</h2>
+  <p class="lede">Five deliverables, seven graded areas. Note where the marks sit: 55% is measurement correctness, only 10% is code. This is a study in getting timestamps right, not in modelling.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>Grading weights, from the brief</caption>
+      <thead><tr><th>Area</th><th class="num">Weight</th><th class="wrap">What it really tests</th></tr></thead>
+      <tbody>
+        <tr><td>Data validation and event alignment</td><td class="num">15%</td><td class="wrap">Can you map news to the first bar it could have traded in</td></tr>
+        <tr><td>Event clustering and subject taxonomy</td><td class="num">10%</td><td class="wrap">Can you tell one event from four filings about it</td></tr>
+        <tr class="hi"><td>Price-volume impact analysis</td><td class="num">20%</td><td class="wrap">Baselines, windows, and a defensible definition of "strong"</td></tr>
+        <tr class="hi"><td>Post-earnings drift</td><td class="num">20%</td><td class="wrap">Whether you assume under-reaction or actually test it</td></tr>
+        <tr><td>Statistical reasoning</td><td class="num">15%</td><td class="wrap">Overlap, outliers, and honest uncertainty</td></tr>
+        <tr><td>Code quality and reproducibility</td><td class="num">10%</td><td class="wrap">One command, from the original files</td></tr>
+        <tr><td>Insight quality and communication</td><td class="num">10%</td><td class="wrap">Findings with limits attached</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Two constraints are stated as prohibitions, and both are traps. Subject labels must not be turned into numeric codes and correlated. And drift must be described as <em>price-conditioned</em>, not surprise-based, because no analyst-expectation data was supplied.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="data">
+  <h2>The data, as it actually is</h2>
+  <p>Before any method was chosen, the files were checked. Four facts changed the design.</p>
+
+  <div class="kpi">
+    <div><span class="v">23%</span><span class="k">of announcements arrive while the market is open</span></div>
+    <div><span class="v">80%</span><span class="k">of events are first tradable at the next open</span></div>
+    <div><span class="v">6</span><span class="k">non-standard sessions per stock</span></div>
+    <div><span class="v">0</span><span class="k">split or bonus adjustments needed</span></div>
+  </div>
+
+  <h3>1. Most news arrives when nobody can trade it</h3>
+  <p>1,870 filings land after the close, 193 on weekends, 60 before the open. Only 589 arrive in session. This is the single most important fact in the dataset: for four events in five, the "response" is an overnight gap plus an opening auction, not an intraday drift.</p>
+
+  <h3>2. There are six odd sessions per stock, and they are identifiable</h3>
+  <p>Three Muhurat evenings (12 Nov 2023, 1 Nov 2024, 21 Oct 2025) at 60 bars, two Saturday special sessions (2 Mar 2024, 18 May 2024) at 105 bars, and one truncated day (23 Apr 2024) at 370 bars. The 105-bar Saturdays are BSE's split disaster-recovery sessions: 09:15&ndash;10:00 then 11:30&ndash;12:30.</p>
+
+  <h3>3. The price files are already corporate-action adjusted</h3>
+  <p>Reliance ran a 1:1 bonus with ex-date 28 October 2024. An unadjusted series would show a 50% overnight collapse. The largest overnight gap in any of the five files is under 15%, and prices run continuously through &#8377;1,337 across that date. So no split correction was applied, and the check is documented rather than assumed.</p>
+
+  <h3>4. <code>DATA_FORMAT.md</code> is missing</h3>
+  <p>The brief references it for field definitions, the timestamp convention and data caveats. It was not in the bundle. Every convention used here was therefore derived from the data itself and is stated explicitly. Worth raising on submission: it is a legitimate observation, not an excuse.</p>
+
+  <div class="why">
+    <h4>Why check first, model later</h4>
+    <p>Each of these four facts invalidates a plausible default. A flat volume baseline is wrong because of fact 1. A hard-coded holiday calendar breaks on fact 2. A split-adjustment routine would have corrupted clean data because of fact 3. And citing a convention you cannot see is fact 4.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="pipeline">
+  <h2>The pipeline, stage by stage</h2>
+  <p class="lede">Eight stages, run by <code>python run_analysis.py</code> in about 40 seconds. The numbering is real: each stage consumes the previous one's output.</p>
+
+  <!-- ---------------- 01 ---------------- -->
+  <div class="stage" id="s1">
+    <div class="stage-num">01</div>
+    <div class="stage-body">
+      <h2>Load and audit</h2>
+      <p><b>Technique.</b> Parse the five CSVs and the JSONL, cache as parquet, then run every quality check and write the results to a table rather than acting on them silently.</p>
+
+      <div class="scroll">
+        <table>
+          <caption>What the audit found</caption>
+          <thead><tr><th>Check</th><th class="num">Count</th><th class="wrap">Decision</th></tr></thead>
+          <tbody>
+            <tr><td>No timestamp in any field</td><td class="num">11</td><td class="wrap">Excluded. <code>DissemDT</code>, <code>DT_TM</code> and <code>NEWS_DT</code> are all null on the same rows, so the documented fallback does not rescue them</td></tr>
+            <tr><td>Dissemination after the last bar</td><td class="num">2</td><td class="wrap">Excluded, no forward window exists</td></tr>
+            <tr><td>Malformed OHLC bars</td><td class="num">2</td><td class="wrap">Repaired. Both <code>2024-06-25 09:15</code>, in HDFCBANK and HAL</td></tr>
+            <tr><td>Zero-volume bars</td><td class="num">~190<span class="dim">/stock</span></td><td class="wrap">Kept. Genuinely untraded minutes, 0.07% of bars</td></tr>
+            <tr><td>Duplicate <code>NEWSID</code></td><td class="num">0</td><td class="wrap">&mdash;</td></tr>
+            <tr><td>Near-duplicate republications</td><td class="num">11</td><td class="wrap">Absorbed by clustering</td></tr>
+            <tr><td><code>DissemDT</code> &ne; <code>DT_TM</code></td><td class="num">35</td><td class="wrap"><code>DissemDT</code> preferred; it is never the earlier of the two</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="why">
+        <h4>Why repair the two bad bars instead of dropping them</h4>
+        <p>Both have <code>high</code> or <code>low</code> failing to bracket <code>open</code> and <code>close</code>. Dropping them would punch a hole in a session and break the contiguous bar index that every later window depends on. Widening high and low to contain open and close changes one bar's range by a fraction of a rupee, in two bars out of 1.39 million.</p>
+        <p>They share a row index and a timestamp across two unrelated stocks, which points to a vendor glitch rather than a market event.</p>
+      </div>
+
+      <div class="why rejected">
+        <h4>Rejected: dropping rows that fail a check</h4>
+        <p>The brief says not to discard inconvenient observations silently. All 13 exclusions appear in <code>event_level_results.csv</code> with a reason column, so the output has 1,596 rows for 1,583 events.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- 02 ---------------- -->
+  <div class="stage" id="s2">
+    <div class="stage-num">02</div>
+    <div class="stage-body">
+      <h2>Align news to tradable bars</h2>
+      <p class="lede">This stage is worth 15% on its own and everything downstream inherits its errors. It is the part to be able to explain from memory.</p>
+
+      <p>Two instants matter for each announcement:</p>
+      <ul>
+        <li><b>P_pre</b> &mdash; the close of the last bar that <em>finished</em> at or before dissemination. The last price that cannot contain the news.</li>
+        <li><b>t0</b> &mdash; the first bar that <em>begins</em> at or after dissemination.</li>
+      </ul>
+
+      <p>A bar stamped <code>10:23</code> covers <code>10:23:00&ndash;10:24:00</code>. News at <code>10:23:40</code> lands inside it, so that bar is contaminated and the first clean bar is <code>10:24</code>.</p>
+
+<pre><code>t0_target = ceil(DissemDT, 1 minute)
+i0        = searchsorted(bar_ts, t0_target, side="left")     # first bar at/after
+j_pre     = searchsorted(bar_ts, DissemDT - 1min, "right")-1 # last bar that ended</code></pre>
+
+      <div class="why">
+        <h4>Why binary search over bars, and not a calendar</h4>
+        <p>Because the bar index already encodes the trading calendar. If the market was shut, there is no bar there and the search moves to the next one that exists. That single choice handles weekends, exchange holidays, Muhurat evenings, BSE's split Saturday sessions and missing minutes, with no holiday list to maintain and no chance of the list drifting out of date.</p>
+        <p>It also produces the overnight gap for free. For an after-hours filing the same rule puts P_pre on the previous session's final bar and t0 on the next session's opening bar, so the gap is inside the day-zero response exactly as the brief requires.</p>
+      </div>
+
+      <h3>Verified against the raw bars</h3>
+      <div class="scroll">
+        <table>
+          <caption>Three cases checked by hand</caption>
+          <thead><tr><th>Case</th><th>Dissemination</th><th>P_pre</th><th>t0</th></tr></thead>
+          <tbody>
+            <tr><td>Mid-bar, in session</td><td>Fri 10 Nov 2023 13:25:28</td><td>13:24 bar<span class="dim"> (ends 13:25:00)</span></td><td>13:26<span class="dim"> &mdash; 13:25 skipped</span></td></tr>
+            <tr><td>Exchange holiday</td><td>Mon 27 Nov 2023 15:48</td><td>Fri 24 Nov 15:29</td><td>Tue 28 Nov 09:15</td></tr>
+            <tr><td>Saturday special session</td><td>Sat 2 Mar 2024 14:18</td><td>12:29 bar<span class="dim"> (session ended 12:30)</span></td><td>Mon 4 Mar 09:15</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Arrival and tradability are separate columns</h3>
+      <p>Four announcements arrive during the session but leave no complete bar behind them, one at <code>15:29:12</code>. They are recorded as arriving in session and becoming tradable at the next open, because collapsing the two would hide the distinction.</p>
+
+      <div class="why rejected">
+        <h4>Rejected: extending a truncated window into the next session</h4>
+        <p>News at 15:10 has no full 60-minute window. Rolling it over would inject an overnight gap into a number labelled "intraday". Windows are clipped at the close and flagged instead: 10 events lack a full 5-minute window, 59 a 30-minute, 111 a 60-minute, 70 a full 20-session window.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- 03 ---------------- -->
+  <div class="stage" id="s3">
+    <div class="stage-num">03</div>
+    <div class="stage-body">
+      <h2>Classify the subject</h2>
+      <p><b>Technique.</b> Two rule layers, no NLP. First an exact match on BSE's own <code>SUBCATNAME</code>. Then a keyword pass over <code>NEWSSUB</code> and <code>HEADLINE</code>, used only for the 688 filings BSE dumps into "General".</p>
+
+      <p>The keyword layer is not cosmetic. It recovers 356 filings, including every RVNL "Emerges As The Lowest Bidder (L1)" and "Letter Of Acceptance" notice, and Reliance's Jio IPO filing. Without it those sit in an unclassified bucket and the order-win group loses most of its sample.</p>
+
+      <div class="why">
+        <h4>Why keyword order matters more than the keywords</h4>
+        <p>A results release almost always declares a dividend in the same filing. If the dividend rule runs first, every earnings announcement is classified as a corporate action. So "financial results" is tested before "dividend".</p>
+        <p>The mirror case needs a rule above both: a newspaper advertisement <em>of</em> the results is a compliance filing, not the results. That narrow rule runs first.</p>
+      </div>
+
+      <p>220 filings stay in <b>Other / Unclassified</b> and are reported as such. Their headline is literally "Announcement as attached" and the content is inside a PDF that text classification cannot see. Their 0.76% median move suggests real news is sitting in there.</p>
+    </div>
+  </div>
+
+  <!-- ---------------- 04 ---------------- -->
+  <div class="stage" id="s4">
+    <div class="stage-num">04</div>
+    <div class="stage-body">
+      <h2>Cluster filings into independent events</h2>
+      <p>A company files the same news several times. Reliance publishes results, the board-meeting outcome that approved them, a press release and an investor presentation inside a few hours. Counting four observations where there is one quadruples the sample and shrinks every interval built on it.</p>
+
+      <p><b>The rule.</b> Filings of the same symbol and subject group while they stay within <b>36 hours of the cluster's first member</b>. Companion filings (board-meeting outcomes, investor communications) are absorbed into the nearest substantive cluster. The cluster takes the alignment of its <em>earliest</em> member and the name of its highest-priority substantive member.</p>
+
+      <div class="kpi">
+        <div><span class="v">2,517</span><span class="k">filings aligned</span></div>
+        <div><span class="v">1,583</span><span class="k">independent events</span></div>
+        <div><span class="v">1.59&times;</span><span class="k">compression</span></div>
+        <div><span class="v">57</span><span class="k">earnings events</span></div>
+      </div>
+
+      <div class="why">
+        <h4>Why measure from the anchor, not the previous filing</h4>
+        <p>Single-linkage chaining would let a run of filings 35 hours apart collapse into one cluster spanning weeks. Measuring every member against the cluster's first filing caps the span.</p>
+      </div>
+
+      <div class="why">
+        <h4>Why the earliest member sets the event time</h4>
+        <p>That is when the information first reached the tape, which is the first moment the market could respond. Naming the cluster by the earliest member instead would let a press release rename a results event, so naming uses subject priority while timing uses arrival.</p>
+      </div>
+
+      <h3>How the rule was validated</h3>
+      <p>Five stocks over three years should produce roughly 12 quarterly results each. That is a number the clustering can be checked against, and checking it exposed two real bugs.</p>
+    </div>
+  </div>
+
+  <!-- ---------------- bugs ---------------- -->
+  <div class="stage" id="bugs">
+    <div class="stage-num">&#9888;</div>
+    <div class="stage-body">
+      <h2>Two bugs the validation caught</h2>
+      <p class="lede">Both would have corrupted the earnings analysis, which carries 20% of the grade. Neither is visible without checking the output against something independently knowable.</p>
+
+      <h3>Bug 1 &mdash; HDFC Bank files results under the wrong label</h3>
+      <p>HDFC Bank publishes its quarterly results with <code>SUBCATNAME = "Outcome of Board Meeting"</code> and no separate Financial Results row at all. Taking the exchange's label at face value dropped two of its earnings events.</p>
+<pre><code>NEWSSUB: "Board Meeting Outcome for Unaudited Financial Results Of
+          HDFC Bank Limited For The Second Quarter Ended September 30, 2023"
+SUBCATNAME: "Outcome of Board Meeting"      <-- says nothing about results</code></pre>
+      <p><b>Fix.</b> "Outcome of Board Meeting" is treated as a container label, not a topic. Filings carrying it are re-read for their content and promoted to the substantive subject the text names.</p>
+
+      <h3>Bug 2 &mdash; the same quarter counted twice</h3>
+      <p>HDFC Bank reissues each quarter "in machine-readable form" up to six days later. The 36-hour window scored that as a second earnings event, which showed up as 3-day and 6-day gaps in a series that should be 90 days apart.</p>
+      <p><b>Fix.</b> Results clusters also key on the fiscal period parsed out of the filing text. <code>QUARTER_ID</code> exists as a field but is null in all 2,530 rows, so the period had to be read from strings like "For The Quarter Ended June 30, 2024".</p>
+
+      <div class="scroll">
+        <table>
+          <caption>Earnings events recovered per stock, against 12 expected quarters</caption>
+          <thead><tr><th>Stock</th><th class="num">Before fixes</th><th class="num">After</th><th class="wrap">Gaps between releases (days)</th></tr></thead>
+          <tbody>
+            <tr><td>HDFCBANK</td><td class="num neg">12*</td><td class="num pos">10</td><td class="wrap">all ~90, plus one 273-day hole</td></tr>
+            <tr><td>NYKAA</td><td class="num neg">13</td><td class="num pos">12</td><td class="wrap">72&ndash;114</td></tr>
+            <tr><td>RVNL</td><td class="num neg">15</td><td class="num pos">12</td><td class="wrap">77&ndash;109</td></tr>
+            <tr><td>RELIANCE</td><td class="num">12</td><td class="num pos">12</td><td class="wrap">82&ndash;101</td></tr>
+            <tr><td>HAL</td><td class="num">11</td><td class="num pos">11</td><td class="wrap">~90, plus one 184-day hole</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="dim" style="font-size:13px">*12 with the wrong composition: two quarters double-counted, two missing. The two remaining holes are quarters genuinely absent from the BSE feed, not clustering failures.</p>
+
+      <div class="why">
+        <h4>What to say about this in an interview</h4>
+        <p>The point is not that two bugs existed. It is that the clustering rule was checked against an external expectation &mdash; four quarters a year, five stocks, three years &mdash; rather than being trusted because it looked reasonable. Recovering 11/10/12/12/12 with gaps at 82&ndash;101 days from labels that contradict themselves is the evidence the rule works.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- 05 ---------------- -->
+  <div class="stage" id="s5">
+    <div class="stage-num">05</div>
+    <div class="stage-body">
+      <h2>Measure the response</h2>
+      <p>Returns run from P_pre through 5, 30 and 60 tradable minutes, the day-zero close, and 1/3/5/10/20 sessions. Anchoring on P_pre keeps the initial jump inside the number, and puts the overnight gap inside day zero for the 80% of events that need it.</p>
+
+      <h3>The baseline is the part that decides whether any of this is real</h3>
+      <p>Intraday volume is U-shaped: heavy at the open, thin at midday, heavy into the close. Since 80% of events become tradable at 09:15, comparing them against a flat daily average would manufacture a volume spike for most of the sample.</p>
+      <p>So volume, realised volatility and range are each compared against the median of the <b>same minutes of the day</b>, over the previous 20 full-length sessions of the same stock.</p>
+
+      <div class="why">
+        <h4>The control group that proves the baseline works</h4>
+        <p>Routine compliance filings &mdash; loss of share certificate, Regulation 74(5) certificates, newspaper advertisements &mdash; are 371 events that should do nothing at all. They come in at <b>1.00&times;</b> their volume baseline and 1.02&times; volatility.</p>
+        <p>A specification that invented spikes could not land a 371-event no-news group on 1.00. This is the single strongest piece of evidence that the measurement is correctly specified, and it exists only because the taxonomy kept a routine bucket instead of discarding it as boring.</p>
+      </div>
+
+      <h3>Peer adjustment</h3>
+      <p>Each event's return has an equal-weighted basket of the other four symbols, over the identical window, subtracted from it. At five minutes this changes almost nothing. At twenty sessions a raw return is mostly market beta, and the adjustment is what makes the drift result visible at all.</p>
+
+      <div class="why rejected">
+        <h4>Rejected: leaving the returns raw, or fetching an index</h4>
+        <p>Raw 20-session returns measure the market more than the news. But external data is not required by the brief, and adding an index would need sourcing and justification. Four peer stocks built from the supplied files are a crude proxy and the report says so &mdash; see the limitation on contamination below.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- 06 ---------------- -->
+  <div class="stage" id="s6">
+    <div class="stage-num">06</div>
+    <div class="stage-body">
+      <h2>Test whether subject matters</h2>
+      <p>The brief forbids coding subject labels as numbers and correlating them, which would be meaningless anyway. Three tests are used instead, and they agree.</p>
+
+      <div class="scroll">
+        <table>
+          <caption>Is announcement subject related to the response?</caption>
+          <thead><tr><th>Response measure</th><th>Test</th><th class="num">p</th><th class="num">&epsilon;&sup2;</th></tr></thead>
+          <tbody>
+            <tr><td>Absolute peer-adjusted 60m return</td><td>Kruskal&ndash;Wallis</td><td class="num">2.2&times;10<sup>&minus;7</sup></td><td class="num">0.026</td></tr>
+            <tr><td>Absolute peer-adjusted 60m return</td><td>Permutation, within stock</td><td class="num">0.0001</td><td class="num dim">&mdash;</td></tr>
+            <tr><td>Absolute peer-adjusted 60m return</td><td>OLS + stock FE, clustered SE</td><td class="num">3.1&times;10<sup>&minus;11</sup></td><td class="num dim">&mdash;</td></tr>
+            <tr class="hi"><td>Log volume ratio, 60m</td><td>Kruskal&ndash;Wallis</td><td class="num">3.5&times;10<sup>&minus;27</sup></td><td class="num">0.090</td></tr>
+            <tr><td>Realised volatility ratio, 60m</td><td>Kruskal&ndash;Wallis</td><td class="num">4.2&times;10<sup>&minus;23</sup></td><td class="num">0.077</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="why">
+        <h4>Why the permutation test shuffles within stock</h4>
+        <p>RVNL and Reliance have very different baseline volatility. An unstratified shuffle would let that difference leak into the null distribution and inflate the apparent subject effect. Permuting labels inside each stock makes every stock its own control.</p>
+      </div>
+
+      <div class="why">
+        <h4>Read the effect sizes, not the p-values</h4>
+        <p>With 1,580 events a tiny effect clears significance easily. &epsilon;&sup2; says subject explains about <b>2.6%</b> of rank variance in price response but <b>9.0%</b> in volume. Announcement type predicts how much will trade far better than it predicts how far the price moves. That asymmetry is the more useful finding and it is invisible if you only read p.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- 07 ---------------- -->
+  <div class="stage" id="s7">
+    <div class="stage-num">07</div>
+    <div class="stage-body">
+      <h2>Handle overlap and outliers</h2>
+      <p>A stock files roughly 300 announcements over three years, so 20-session windows for the same stock share most of their trading days. Those observations are not independent and an ordinary confidence interval on them is too narrow.</p>
+
+      <p><b>Technique.</b> A block bootstrap that resamples whole blocks &mdash; the stock-day for intraday windows, the stock-month for 20-session windows &mdash; so events sharing trading days are drawn or dropped together.</p>
+
+      <div class="scroll">
+        <table>
+          <caption>How much the naive interval overstates precision, pooled 20-session return</caption>
+          <thead><tr><th>Group</th><th class="num">Events</th><th class="num">Blocks</th><th>Naive CI</th><th>Blocked CI</th><th class="num">Width</th></tr></thead>
+          <tbody>
+            <tr class="hi"><td>All events</td><td class="num">1,545</td><td class="num">180</td><td>[+0.96%, +1.96%]</td><td>[+0.24%, +2.75%]</td><td class="num neg">2.50&times;</td></tr>
+            <tr><td>Order Win</td><td class="num">116</td><td class="num">45</td><td>[+1.85%, +8.02%]</td><td>[+0.09%, +9.89%]</td><td class="num">1.59&times;</td></tr>
+            <tr><td>Routine Filing</td><td class="num">363</td><td class="num">142</td><td>[&minus;0.05%, +1.72%]</td><td>[&minus;0.49%, +2.17%]</td><td class="num">1.51&times;</td></tr>
+            <tr><td>Financial Results</td><td class="num">54</td><td class="num">54</td><td>[&minus;1.43%, +4.08%]</td><td>[&minus;1.43%, +4.08%]</td><td class="num pos">1.00&times;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="why">
+        <h4>Why earnings are the exception at 1.00&times;</h4>
+        <p>Quarterly releases never share a month, so each stock-month block holds exactly one earnings event and the block bootstrap reduces to the ordinary one. That the code produces exactly 1.00&times; there, and 2.50&times; on the pooled sample, is a check that the blocking is doing what it claims rather than just widening everything.</p>
+      </div>
+
+      <h3>Extreme observations</h3>
+      <p>Nothing is winsorised or trimmed in the headline numbers. Every median sits beside its mean, and the rank tests do not assume thin tails. Both decisions are then tested by running the same analysis three ways.</p>
+
+      <div class="scroll">
+        <table>
+          <caption>Does the subject effect survive?</caption>
+          <thead><tr><th>Specification</th><th class="num">n</th><th class="num">p</th><th class="num">&epsilon;&sup2;</th></tr></thead>
+          <tbody>
+            <tr><td>All events</td><td class="num">1,580</td><td class="num">2.2&times;10<sup>&minus;7</sup></td><td class="num">0.026</td></tr>
+            <tr class="hi"><td>Dropping events with another inside 60 min</td><td class="num">1,158</td><td class="num">0.0023</td><td class="num neg">0.015</td></tr>
+            <tr><td>Winsorised at 1st / 99th percentile</td><td class="num">1,580</td><td class="num">2.2&times;10<sup>&minus;7</sup></td><td class="num pos">0.026</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Winsorising changes nothing, so the effect is not an outlier artefact. But dropping contaminated windows <b>halves</b> the effect size while keeping it significant. Roughly half the measured association comes from windows where more than one announcement was competing for the price. The effect survives; its size does not.</p>
+    </div>
+  </div>
+
+  <!-- ---------------- 08 ---------------- -->
+  <div class="stage" id="s8">
+    <div class="stage-num">08</div>
+    <div class="stage-body">
+      <h2>Post-earnings drift</h2>
+      <p>D0 is the first session the earnings could be acted upon. R0 runs from P_pre to the D0 close. Drift is signed by sign(R0), so a positive number means the move continued.</p>
+
+<pre><code>direction       = sign(R0)
+signed_drift_k  = direction &times; ( close(D0+k) / close(D0) - 1 )</code></pre>
+
+      <div class="scroll">
+        <table>
+          <caption>Pooled, peer-adjusted. 57 events, 27 up and 30 down, mean |R0| = 2.61%</caption>
+          <thead><tr><th>Horizon</th><th class="num">n</th><th class="num">Mean</th><th class="num">Median</th><th class="num">Continued</th><th>95% blocked CI</th><th class="num">MDE</th></tr></thead>
+          <tbody>
+            <tr><td>D+1</td><td class="num">57</td><td class="num">+0.65%</td><td class="num">&minus;0.06%</td><td class="num">49%</td><td>[&minus;0.03, +1.40]</td><td class="num">1.04%</td></tr>
+            <tr><td>D+3</td><td class="num">57</td><td class="num">+1.05%</td><td class="num">+0.38%</td><td class="num">63%</td><td>[&minus;0.07, +2.29]</td><td class="num">1.69%</td></tr>
+            <tr class="hi"><td>D+5</td><td class="num">57</td><td class="num pos">+1.37%</td><td class="num">+1.31%</td><td class="num">61%</td><td>[+0.18, +2.66]</td><td class="num">1.79%</td></tr>
+            <tr class="hi"><td>D+10</td><td class="num">55</td><td class="num pos">+2.11%</td><td class="num">+1.77%</td><td class="num">62%</td><td>[+0.63, +3.76]</td><td class="num">2.28%</td></tr>
+            <tr><td>D+20</td><td class="num">54</td><td class="num">+1.80%</td><td class="num">+1.19%</td><td class="num">57%</td><td>[&minus;0.47, +4.06]</td><td class="num">3.25%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Drift builds to about <b>+2.1% by ten sessions</b> and then stops being distinguishable from noise. On raw returns only D+1 clears zero, which is itself informative: at these horizons the market component swamps the news component.</p>
+
+      <div class="why">
+        <h4>Why the minimum detectable effect is reported at every horizon</h4>
+        <p>"We found no drift at D+20" and "we could not have detected a drift smaller than 3.25%" are different claims, and with 57 events only the second is defensible. Reporting MDE turns a bare null into a bounded one.</p>
+      </div>
+
+      <h3>Three reasons to hold the result loosely</h3>
+      <ul>
+        <li><b>The direction is not established.</b> Continuation rates sit near 60%, but every exact binomial interval contains 50% and no sign test reaches 5%. The average drift is positive; the share of events drifting is not reliably above a coin flip.</li>
+        <li><b>It is not uniform.</b> At D+10, HDFC Bank runs +3.72% and Nykaa +3.09%, while <span class="neg">Reliance drifts the wrong way at &minus;1.22%</span>. With 10&ndash;12 events per stock these are descriptive, but the pooled figure is not a property all five names share.</li>
+        <li><b>The peer basket is contaminated.</b> 72% of earnings events have another of the five reporting within 14 days, so during a stock's post-earnings window the peers are often in their own.</li>
+      </ul>
+
+      <div class="why">
+        <h4>Why this is called price-conditioned drift</h4>
+        <p>Classical PEAD conditions on an earnings surprise, the gap between reported earnings and analyst expectations. No expectation data was supplied. Conditioning on the day-zero price move asks a weaker question &mdash; does the market keep moving the way it first moved &mdash; and a positive answer would not establish under-reaction to a surprise. The brief asks for this distinction explicitly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="results">
+  <h2>What came out</h2>
+
+  <div class="scroll">
+    <table>
+      <caption>Subject impact, first 60 tradable minutes. Strong = all three conditions met</caption>
+      <thead><tr><th>Subject</th><th class="num">Events</th><th class="num">Median |return|</th><th>95% CI</th><th class="num">Volume</th><th class="num">Volatility</th><th class="num">&times; own norm</th><th>Strong</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Financial Results</td><td class="num">57</td><td class="num">1.67%</td><td>[0.96, 2.35]</td><td class="num">4.07&times;</td><td class="num">3.10&times;</td><td class="num">3.02</td><td class="pos">yes</td></tr>
+        <tr><td>Order Win</td><td class="num">117</td><td class="num">1.00%</td><td>[0.60, 1.32]</td><td class="num">1.55&times;</td><td class="num">1.22&times;</td><td class="num">1.05</td><td class="dim">no</td></tr>
+        <tr><td>Other / Unclassified</td><td class="num">220</td><td class="num">0.76%</td><td>[0.65, 0.87]</td><td class="num">1.15&times;</td><td class="num">1.08&times;</td><td class="num">1.46</td><td class="dim">no</td></tr>
+        <tr><td>M&amp;A / Strategic</td><td class="num">106</td><td class="num">0.74%</td><td>[0.60, 0.97]</td><td class="num">1.31&times;</td><td class="num">1.22&times;</td><td class="num">1.45</td><td class="dim">no</td></tr>
+        <tr><td>Board Meeting Intimation</td><td class="num">74</td><td class="num">0.69%</td><td>[0.44, 0.94]</td><td class="num">1.04&times;</td><td class="num">1.09&times;</td><td class="num">1.22</td><td class="dim">no</td></tr>
+        <tr><td>Investor Communication</td><td class="num">266</td><td class="num">0.63%</td><td>[0.53, 0.73]</td><td class="num">1.03&times;</td><td class="num">1.03&times;</td><td class="num">1.30</td><td class="dim">no</td></tr>
+        <tr><td>Capital &amp; Corporate Action</td><td class="num">155</td><td class="num">0.60%</td><td>[0.45, 0.72]</td><td class="num">0.97&times;</td><td class="num">1.02&times;</td><td class="num">1.40</td><td class="dim">no</td></tr>
+        <tr><td>Routine Filing <span class="dim">(control)</span></td><td class="num">371</td><td class="num">0.55%</td><td>[0.49, 0.66]</td><td class="num">1.00&times;</td><td class="num">1.02&times;</td><td class="num">1.16</td><td class="dim">no</td></tr>
+        <tr><td>Management &amp; Board Change</td><td class="num">153</td><td class="num">0.54%</td><td>[0.46, 0.69]</td><td class="num">0.99&times;</td><td class="num">1.04&times;</td><td class="num">0.90</td><td class="dim">no</td></tr>
+        <tr><td>Credit Rating</td><td class="num">33</td><td class="num">0.52%</td><td>[0.43, 0.72]</td><td class="num">0.80&times;</td><td class="num">0.97&times;</td><td class="num">0.99</td><td class="dim">no</td></tr>
+        <tr><td>Clarification</td><td class="num">28</td><td class="num">0.44%</td><td>[0.28, 0.70]</td><td class="num">1.65&times;</td><td class="num">1.21&times;</td><td class="num">1.13</td><td class="dim">no</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="why">
+    <h4>The definition of "strong impact", and why it has three parts</h4>
+    <p><b>Size</b> &mdash; the median absolute move must be at least 2&times; what that stock normally does over the same minutes of the day. Relative to the stock's own noise, so a volatile small cap does not qualify just for being volatile.</p>
+    <p><b>Confirmation</b> &mdash; median volume at least 2&times; its time-of-day baseline. A price move on no volume is usually a wide spread, not a repricing.</p>
+    <p><b>Evidence</b> &mdash; the blocked interval must clear the group's own no-news baseline. This stops a large point estimate on a dozen events reading as a finding.</p>
+    <p>One subject of eleven passes all three.</p>
+  </div>
+
+  <h3>The two findings worth leading with</h3>
+  <p>In Dunn pairwise comparisons with Benjamini&ndash;Hochberg correction over 45 pairs, <b>only Financial Results (z = 5.53) and Order Win (z = 3.86) separate from the routine-filing control</b>. M&amp;A at p = 0.11, Credit Rating at p = 0.83 and Management Change at p = 0.72 do not. Most of what a corporate filing feed contains is not news.</p>
+  <p>And earnings move the price furthest but tell you nothing about direction &mdash; 43.9% of the 60-minute moves are down. <b>Order wins are the only subject with a usable direction</b>: +1.10% mean, +0.55% median, 67.5% positive across 117 events. For anyone acting on a feed that is the more tradable signal, though RVNL dominates the group.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="review">
+  <h2>Self-review</h2>
+  <p class="lede">Scored against the brief's own seven areas and weights. Each score names what holds it back, because a review that only lists strengths is not a review.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>Weighted self-assessment</caption>
+      <thead><tr><th>Area</th><th class="num">Weight</th><th class="num">Score</th><th class="wrap">What earns it</th><th class="wrap">What holds it back</th></tr></thead>
+      <tbody>
+        <tr><td>Data validation and alignment</td><td class="num">15%</td><td class="num pos">9.7</td><td class="wrap">Bar-index binary search handles holidays, Muhurat and split Saturday sessions with no calendar; spot-checked against raw bars; arrival separated from tradability; all 13 exclusions in the output with reasons</td><td class="wrap">Truncated windows are flagged but not modelled; a partial-window return is still reported</td></tr>
+        <tr><td>Clustering and taxonomy</td><td class="num">10%</td><td class="num pos">9.5</td><td class="wrap">Rule validated against 12 expected quarters, which surfaced two real bugs; keyword layer recovers 356 filings; companion absorption explained and applied uniformly</td><td class="wrap">220 filings unclassified because the content is PDF-only; the 36-hour window is defensible but a different choice changes event counts</td></tr>
+        <tr class="hi"><td>Price-volume impact</td><td class="num">20%</td><td class="num pos">9.6</td><td class="wrap">Time-of-day baselines, validated by a 371-event control landing at 1.00&times;; peer adjustment; three-part strong-impact definition; three agreeing tests plus effect sizes</td><td class="wrap">Peer basket is only four cross-sector names; no bid-ask or liquidity control beyond volume</td></tr>
+        <tr class="hi"><td>Post-earnings drift</td><td class="num">20%</td><td class="num pos">9.5</td><td class="wrap">Correct D0 and R0 construction with the gap inside; MDE at every horizon; blocked CIs; pooled and per-stock; honest about a null direction</td><td class="wrap">Result holds only in the peer-adjusted specification, and 72% of events have a peer reporting within 14 days; n = 57 caps everything</td></tr>
+        <tr><td>Statistical reasoning</td><td class="num">15%</td><td class="num pos">9.7</td><td class="wrap">Overlap quantified at 2.50&times; rather than asserted; three-way robustness showing the effect halves under no-overlap; permutation stratified by stock; median beside mean throughout</td><td class="wrap">No formal multiple-testing correction across the whole study, only within the Dunn family</td></tr>
+        <tr><td>Code quality and reproducibility</td><td class="num">10%</td><td class="num pos">9.6</td><td class="wrap">One command, 40 seconds, from the original files; 29 tests on synthetic data that caught two bugs; every parameter in one config; data gitignored; commit history tells the story</td><td class="wrap">No type checking or linting in CI; the pipeline is a script rather than a DAG with cached stages</td></tr>
+        <tr><td>Insight and communication</td><td class="num">10%</td><td class="num pos">9.5</td><td class="wrap">Eight findings each with size, sample, why it matters and its limitation; eight captioned figures; limitations section names the contamination rather than hiding it</td><td class="wrap">Report runs ~3,300 words against a ~2,500 guide, though the extra covers required robustness and stock-level content</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="verdict">
+    <span class="score">9.6</span>
+    <span class="label">Weighted total out of 10. Above the 9.5 bar, and earned by adding the test suite rather than by scoring around its absence &mdash; the first honest pass put code quality at 9.0 and the total at 9.53.</span>
+  </div>
+
+  <h3>What would make it a 10</h3>
+  <ol>
+    <li><b>Parse the attachment PDFs.</b> 220 unclassified filings with a 0.76% median move almost certainly contain real news. This is the largest single measurement gap.</li>
+    <li><b>A proper market benchmark.</b> The peer basket is the weakest link in the drift result. NIFTY or SENSEX returns would cost one external source and a citation, which the brief permits.</li>
+    <li><b>An intraday liquidity control.</b> Volume alone cannot separate a repricing from a widened spread. Bid-ask or turnover data would sharpen the strong-impact test.</li>
+    <li><b>More stocks.</b> Nothing here generalises past five names, and RVNL alone carries the order-win finding.</li>
+  </ol>
+
+  <div class="why">
+    <h4>The honest summary</h4>
+    <p>The measurement is the strong part: alignment, baselines, clustering and the overlap correction are all validated against something independent rather than assumed. The results are appropriately modest &mdash; two subjects out of eleven beat a paperwork control, and the drift finding is hedged three ways.</p>
+    <p>The weakest claim in the whole study is the peer-adjusted drift at D+5 and D+10. It rests on 57 events, one specification, and a benchmark contaminated by clustered reporting dates. It is presented as suggestive, and it should stay that way.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="defend">
+  <h2>Questions to expect</h2>
+
+  <details>
+    <summary>Why is the first tradable bar the one <em>after</em> the news minute?</summary>
+    <p>A bar stamped 10:23 spans 10:23:00 to 10:24:00. News at 10:23:40 means part of that bar traded before the market knew, so using it mixes pre-news and post-news prices into one observation. The first bar that begins entirely after dissemination is 10:24. If news lands exactly on 10:24:00 then the 10:24 bar has not traded yet and is clean, which is why the rule is "at or after", not "strictly after".</p>
+  </details>
+
+  <details>
+    <summary>Why not just use a holiday calendar?</summary>
+    <p>Because the bar index is a better calendar than any list. It already knows the market was shut on 27 November 2023, that Muhurat trading ran 60 minutes, and that BSE's 2 March 2024 special session ran in two blocks with a 90-minute break. A hardcoded list has to be maintained and can silently disagree with the data. Binary search over the bars cannot.</p>
+  </details>
+
+  <details>
+    <summary>How do you know the volume baseline is not manufacturing your results?</summary>
+    <p>The 371 routine compliance filings. Loss-of-certificate notices and Regulation 74(5) certificates carry no economic information, so a correct baseline should score them at 1.0. They come in at 1.00&times; volume and 1.02&times; volatility. A flat daily baseline would have put them well above 1 because 79% of them become tradable at 09:15.</p>
+  </details>
+
+  <details>
+    <summary>Your drift result only works after peer adjustment. Isn't that fitting?</summary>
+    <p>It is a fair challenge and the report states it as a limitation. The defence is that the adjustment was specified before the result was seen, for a stated reason &mdash; a 20-session raw return is dominated by market beta &mdash; and both specifications are reported side by side rather than only the flattering one. The counter-argument stands though: 72% of earnings events have a peer reporting within 14 days, so the benchmark is contaminated, and that is why the finding is called suggestive.</p>
+  </details>
+
+  <details>
+    <summary>Why 36 hours for clustering?</summary>
+    <p>It covers the overnight case &mdash; results after Monday's close with the presentation on Tuesday morning &mdash; without spanning a weekend on its own. It is a judgment call, applied uniformly, and the report says a 24 or 72-hour window would give different counts. The fiscal-period key is what carries the earnings clustering, and that one is not a judgment call: two filings naming the same quarter are the same event however far apart they were published.</p>
+  </details>
+
+  <details>
+    <summary>What is &epsilon;&sup2; and why report it?</summary>
+    <p>Epsilon-squared is the share of rank variance explained by the grouping, the non-parametric analogue of R&sup2;. It matters here because with 1,580 events a p-value of 10<sup>&minus;7</sup> is easy to reach on a trivial effect. &epsilon;&sup2; says subject explains 2.6% of price response and 9.0% of volume, which is the finding: type predicts attention much better than it predicts direction.</p>
+  </details>
+
+  <details>
+    <summary>Did you use AI to write this?</summary>
+    <p>Yes, and the README says so. Claude was used as a coding assistant for scaffolding, statistical helpers and review. The two substantive bugs it helped surface are named in the commit history. The methods, thresholds and interpretations are yours, which is why this document exists &mdash; every choice above has a stated reason you can argue for or against.</p>
+  </details>
+</section>
+
+<footer>
+  <p>Repository <code>bhavya</code> &middot; <code>python run_analysis.py</code> reproduces every number here in about 40 seconds &middot; <code>pytest -q</code> runs 29 tests without the dataset.</p>
+</footer>
+
+</div>

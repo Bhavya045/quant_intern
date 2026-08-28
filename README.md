@@ -1,6 +1,3 @@
-Got you bro 😎 You want the **same README content**, but properly formatted as **raw Markdown code**, so you can **copy-paste it directly into GitHub's `README.md`** and it renders correctly instead of showing weird `[svg]` text.
-
-I'll clean up the broken GitHub-generated `[svg]` lines and keep the structure exactly the same.
 
 ````markdown
 # Corporate announcement impact on five BSE stocks
@@ -183,16 +180,5 @@ data/raw/                supplied files (gitignored)
 
 ````
 
-### ⚠️ One important thing, bro
-
-When you paste this into GitHub's **README.md**, make sure you're pasting the **entire block above**, including the opening and closing:
-
-```text
-```markdown
-````
-
-However, because the README itself contains code blocks, **the outer wrapper can interfere with copying**.
-
-So the easiest way is: **copy only the contents starting from `# Corporate announcement impact on five BSE stocks` through the final `data/raw/` line**, without the outer `markdown and final `.
 
 Then GitHub will render it properly with headings, tables, code blocks, and bullets.
